@@ -26,5 +26,6 @@ def index():
 
     return render_template("index.html", result=result, history=history[-5:])
 
+#only used locally - not in production
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
