@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Binary Converter</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Binary Converter</h1>
+        <form method="POST">
+            <input name="input" placeholder="Enter number or text" required>
+            <div class="buttons">
+                <button name="mode" value="dec_to_bin">Decimal to Binary</button>
+                <button name="mode" value="bin_to_dec">Binary to Decimal</button>
+                <button name="mode" value="text_to_bin">Text to Binary</button>
+                <button name="mode" value="bin_to_text">Binary to Text</button>
+            </div>
+        </form>
+        {% if result %}
+            <div class="result">Result: <code>{{ result }}</code></div>
+        {% endif %}
+        {% if history %}
+            <div class="history">
+                <h3>Recent Conversions</h3>
+                <ul>
+                    {% for h in history %}
+                        <li>{{ h }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
