@@ -4,6 +4,10 @@ from utils import binary_tools
 import sys
 import  os
 
+#clear the conversion history each each time the app starts
+with open("history_file/conversion_history.txt", "w") as file:
+    file.write("")
+
 template_dir = os.path.abspath("templates")
 
 app = Flask(__name__, template_folder=template_dir)
@@ -32,6 +36,11 @@ def index():
 
     return render_template("index.html", result=result, history=history[-5:])
 
+@app.route("/history")
+def view_history():
+    with open("history_file/conversion_history.txt", "r") as f:
+        history = [line.strip() for line in f.readlines()]
+    return render_template("history.html", history=history)
 #only used locally - not in production
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "web"
