@@ -1,6 +1,12 @@
-from flask import Flask, render_template, request
 
-app = Flask(__name__)
+from flask import Flask, render_template, request
+from utils import binary_tools
+import sys
+import  os
+
+template_dir = os.path.abspath("templates")
+
+app = Flask(__name__, template_folder=template_dir)
 
 history = []
 
@@ -13,14 +19,14 @@ def index():
 
         try:
             if mode == "dec_to_bin":
-                result = bin(int(input_data))[2:]
+                result = binary_tools.decimal_to_binary(input_data)
             elif mode == "bin_to_dec":
-                result = str(int(input_data, 2))
+                result = binary_tools.binary_to_decimal(input_data)
             elif mode == "text_to_bin":
-                result = ' '.join(format(ord(c), '08b') for c in input_data)
+                result = binary_tools.text_to_binary(input_data)
             elif mode == "bin_to_text":
-                result = ''.join(chr(int(b, 2)) for b in input_data.split())
-            history.append(f"{input_data} -> {result}")
+                result = binary_tools.binary_to_text(input_data)
+
         except:
             result = "Invalid input!"
 
@@ -28,4 +34,17 @@ def index():
 
 #only used locally - not in production
 if __name__ == "__main__":
-    app.run()
+    mode = sys.argv[1] if len(sys.argv) > 1 else "web"
+
+    if mode == "gui":
+        import tkinter as tk
+        from ui.gui import BinaryConverterGUI
+
+        root = tk.Tk()
+        app = BinaryConverterGUI(root)
+        root.mainloop()
+
+    else:
+        from ui.web import run_web_app
+        run_web_app()
+        #app.run()

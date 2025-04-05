@@ -1,35 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Binary Converter</title>
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8" />
+  <title>Binary Converter</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>Binary Converter</h1>
-        <form method="POST">
-            <input name="input" placeholder="Enter number or text" required>
-            <div class="buttons">
-                <button name="mode" value="dec_to_bin">Decimal to Binary</button>
-                <button name="mode" value="bin_to_dec">Binary to Decimal</button>
-                <button name="mode" value="text_to_bin">Text to Binary</button>
-                <button name="mode" value="bin_to_text">Binary to Text</button>
-            </div>
-        </form>
-        {% if result %}
-            <div class="result">Result: <code>{{ result }}</code></div>
-        {% endif %}
-        {% if history %}
-            <div class="history">
-                <h3>Recent Conversions</h3>
-                <ul>
-                    {% for h in history %}
-                        <li>{{ h }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
-    </div>
+  <div class="dark-mode-toggle">
+      <label class="switch">
+        <input type="checkbox" id="toggleDarkMode">
+        <span class="slider round"></span>
+      </label>
+  </div>
+  <div class="container">
+    <h1>Binary Converter</h1>
+    <form method="POST">
+      <div class="input-wrapper">
+        <input type="text" name="input" placeholder="Enter number or text">
+      </div>
+      <div class="buttons">
+        <button type="submit" name="mode" value="dec_to_bin">Decimal to Binary</button>
+        <button type="submit" name="mode" value="bin_to_dec">Binary to Decimal</button>
+        <button type="submit" name="mode" value="text_to_bin">Text to Binary</button>
+        <button type="submit" name="mode" value="bin_to_text">Binary to Text</button>
+      </div>
+    </form>
+
+    {% if result %}
+      <p><strong>Result:</strong> {{ result }}</p>
+    {% endif %}
+
+    <a href="/history">
+        <button class="history-btn">View History</button>
+    </a>
+  </div>
+  <script>
+    const toggle = document.getElementById("toggleDarkMode");
+
+    // Load current theme from server
+    fetch("/get-theme")
+      .then(res => res.json())
+      .then(data => {
+        if (data.theme === "dark") {
+          document.body.classList.add("dark-mode");
+          toggle.checked = true;
+        }
+      });
+
+    // Update theme and send to server
+    toggle.addEventListener("change", () => {
+      const theme = toggle.checked ? "dark" : "light";
+      document.body.classList.toggle("dark-mode", theme === "dark");
+      fetch("/set-theme", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ theme })
+      });
+    });
+  </script>
+
 </body>
 </html>
