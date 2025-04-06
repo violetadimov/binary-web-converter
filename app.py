@@ -44,11 +44,14 @@ def index():
             else: result = "Invalid mode"
 
             #Save MongoDB
+
+            timestamp = datetime.now()#.strftime("%Y-%m-%d %H:%M:%S")
+            formatted_timestamp = timestamp.strftime("%Y-%m-%d %H:%M:%S")
             history_collection.insert_one({
                 "input": input_data,
                 "mode": mode,
                 "result": result,
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": formatted_timestamp,
             })
 
         except Exception as e:
