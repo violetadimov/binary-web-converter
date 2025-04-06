@@ -69,6 +69,8 @@ def view_history():
             timestamp = entry.get('timestamp')
             if timestamp:
                 entry['timestamp'] = str(timestamp) #convert datetime to string
+            else:
+                entry['timestamp'] = "N/A"
             formatted_history.append(entry)
         return render_template("history.html", history=formatted_history)
     except Exception as e:
