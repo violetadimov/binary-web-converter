@@ -14,23 +14,29 @@
         {% for entry in history %}
           <li>
             <strong>
-              {{ entry.get('timestamp', 'N/A') }}
+              {% if entry.timestamp %}
+                {{ entry.timestamp }}
+              {% else %}
+                N/A
+              {% endif %}
             </strong> -
 
             <strong>
-              {{ entry.get('mode', 'N/A') }}
+              {{ entry.mode }}
             </strong>:
             <code>
-              {{ entry.get('input', '') }}
+              {{ entry.input }}
             </code> ->
             <code>
-              {{ entry.get('result', '') }}
+              {{ entry.result }}
             </code>
 
           </li>
         {% endfor %}
       </ul>
-
+    {% else %}
+      <p>No history found.</p>
+    {% endif %}
     <form method="POST" action="/clear">
       <button type="submit">Clear History</button>
     </form>

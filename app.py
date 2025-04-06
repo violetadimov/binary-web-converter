@@ -75,7 +75,7 @@ def view_history():
         return render_template("history.html", history=formatted_history)
     except Exception as e:
         print("Error loading history:", e)
-        return "Error loading history:"
+        return f"Error loading history: {str(e)}"
 @app.route("/clear-history", methods=["POST"])
 def clear_history():
     history_collection.delete_many({})
