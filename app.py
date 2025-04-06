@@ -3,6 +3,7 @@ from flask import Flask, render_template, request
 from utils import binary_tools
 import  os
 from pymongo import MongoClient
+from datetime import datetime
 
 #clear the conversion history each  time the app starts
 with open("history_file/conversion_history.txt", "w") as file:
@@ -57,7 +58,15 @@ def view_history():
     #with open("history_file/conversion_history.txt", "r") as f:
     #get the last 10 conversion, newest first.
     history = list(history_collection.find().sort("_id", -1).limit(10))
-    return render_template("history.html", history=history)
+    formatted_history = []
+    for item in history:
+        formatted_history.append({
+            "input": item.get("input", ""),
+            "mode": item.get("mode", ""),
+            "result": item.get("result", ""),
+            "timestamp": item.get("timestamp").strftime("%Y-%m-%d %H:%M:%S") if "timestamp" in item and item["timestamp"] else "N/A"
+        })
+    return render_template("history.html", history=formatted_history)
 
 @app.route("/clear-history", methods=["POST"])
 def clear_history():
