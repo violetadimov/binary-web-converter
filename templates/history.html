@@ -13,17 +13,14 @@
       <ul>
         {% for item in history %}
           <li>
-            <strong>{{ entry.timestamp }}</strong> -
-            <strong>{{ entry.mode }}</strong>:
-            <code>{{ entry.input }}</code> ->
-            <code>{{ entry.result }}</code>
+            <strong>{{ entry.timestamp if entry.timestamp else "N/A"}}</strong> -
+            <strong>{{ entry.mode if entry.mode else "N/A" }}</strong>:
+            <code>{{ entry.input if entry.input else "N/A" }}</code> ->
+            <code>{{ entry.result if entry.result else "N/A" }}</code>
 
           </li>
         {% endfor %}
       </ul>
-    {% else %}
-      <p>No history found.</p>
-    {% endif %}
 
     <form method="POST" action="/clear">
       <button type="submit">Clear History</button>
