@@ -14,35 +14,19 @@
         {% for entry in history %}
           <li>
             <strong>
-              {% if entry.timestamp %}
-                {{ entry.timestamp }}
-              {% else %}
-                "N/A"
-              {% endif %}
+              {{ entry.get('timestamp', 'N/A') }}
             </strong> -
 
             <strong>
-              {% if entry.mode %}
-                {{ entry.mode }}
-              {% else %}
-                "N/A"
-              {% endif %}
+              {{ entry.get('mode', 'N/A') }}
             </strong>:
-
+            <br>
             <code>
-              {% if entry.input %}
-                {{ entry.input }}
-              {% else %}
-                "N/A"
-              {% endif %}
+              {{ entry.get('input', '') }}
             </code> ->
-
+            <br>
             <code>
-              {% if entry.result %}
-                {{ entry.result }}
-              {% else %}
-                "N/A"
-              {% endif %}
+              {{ entry.get('result', '') }}
             </code>
 
           </li>
