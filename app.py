@@ -45,8 +45,8 @@ def index():
 
             #Save MongoDB
 
-            timestamp = datetime.now()#.strftime("%Y-%m-%d %H:%M:%S")
-            formatted_timestamp = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            timestamp = datetime.now()
+            formatted_timestamp = timestamp.strftime("%B %d, %Y - %I:%M %p")
             history_collection.insert_one({
                 "input": input_data,
                 "mode": mode,
