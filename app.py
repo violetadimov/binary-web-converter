@@ -10,11 +10,11 @@ with open("history_file/conversion_history.txt", "w") as file:
 
 #Flask App Setup
 template_dir = os.path.abspath("templates")
-#I
+#
 app = Flask(__name__, template_folder=template_dir)
 
 #MongoDB Setup
-MONGO_URI = "mongodb+srv://binaryUser:G@W93@converter.ghsrsp2.mongodb.net/?retryWrites=true&w=majority&appName=Converter"
+MONGO_URI = "mongodb+srv://binaryUser:G%40W93@converter.ghsrsp2.mongodb.net/?retryWrites=true&w=majority&appName=Converter"
 client = MongoClient(MONGO_URI)
 db = client['converter']
 history_collection = db['conversion_history']
