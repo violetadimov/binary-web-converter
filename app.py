@@ -66,6 +66,14 @@ def view_history():
     try:
         history = (history_collection.find().sort("_id", -1).limit(10))
         formatted_history = []
+
+        # Map internal mode keys to display labels
+        mode_mapping = {
+            "dec_to_bin": "Decimal to Binary",
+            "bin_to_dec": "Binary to Decimal",
+            "text_to_bin": "Text to Binary",
+            "bin_to_text": "Binary to Text",
+        }
         for entry in history:
             entry['_id'] = str(entry['_id']) # convert objectId to string
 
@@ -75,6 +83,11 @@ def view_history():
                 entry['timestamp'] = str(timestamp) #convert datetime to string
             else:
                 entry['timestamp'] = "N/A"
+
+            # Translate mode key to display value
+            raw_mode = entry.get('mode', 'Unknown')
+            entry['mode'] = mode_mapping.get(raw_mode, raw_mode)
+
             formatted_history.append(entry)
         return render_template("history.html", history=formatted_history)
     except Exception as e:
