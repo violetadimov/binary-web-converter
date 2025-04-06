@@ -47,7 +47,8 @@ def index():
             history_collection.insert_one({
                 "input": input_data,
                 "mode": mode,
-                "result": result
+                "result": result,
+                "timestamp": datetime.utcnow().isoformat()
             })
 
         except Exception as e:
