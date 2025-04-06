@@ -64,8 +64,11 @@ def view_history():
         formatted_history = []
         for entry in history:
             entry['_id'] = str(entry['_id']) # convert objectId to string
-            if 'timestamp' in entry:
-                entry['timestamp'] = str(entry['timestamp']) #convert datetime to string
+
+            #Use get() safely for timestamp
+            timestamp = entry.get('timestamp')
+            if timestamp:
+                entry['timestamp'] = str(timestamp) #convert datetime to string
             formatted_history.append(entry)
         return render_template("history.html", history=formatted_history)
     except Exception as e:
