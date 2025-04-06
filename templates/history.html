@@ -12,7 +12,13 @@
     {% if history %}
       <ul>
         {% for item in history %}
-          <li>{{ item }}</li>
+          <li>
+            <strong>{{ entry.timestamp }}</strong> -
+            <strong>{{ entry.mode }}</strong>:
+            <code>{{ entry.input }}</code> ->
+            <code>{{ entry.result }}</code>
+
+          </li>
         {% endfor %}
       </ul>
     {% else %}
