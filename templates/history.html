@@ -13,10 +13,37 @@
       <ul>
         {% for item in history %}
           <li>
-            <strong>{{ entry.timestamp if entry.timestamp else "N/A"}}</strong> -
-            <strong>{{ entry.mode if entry.mode else "N/A" }}</strong>:
-            <code>{{ entry.input if entry.input else "N/A" }}</code> ->
-            <code>{{ entry.result if entry.result else "N/A" }}</code>
+            <strong>
+              {% if entry.timestamp %}
+                {{ entry.timestamp }}
+              {% else %}
+                "N/A"
+              {% endif %}
+            </strong> -
+
+            <strong>
+              {% if entry.mode %}
+                {{ entry.mode }}
+              {% else %}
+                "N/A"
+              {% endif %}
+            </strong>:
+
+            <code>
+              {% if entry.input %}
+                {{ entry.input }}
+              {% else %}
+                "N/A"
+              {% endif %}
+            </code> ->
+
+            <code>
+              {% if entry.result %}
+                {{ entry.result }}
+              {% else %}
+                "N/A"
+              {% endif %}
+            </code>
 
           </li>
         {% endfor %}
