@@ -11,7 +11,7 @@ template_dir = os.path.abspath("templates")
 static_dir = os.path.abspath("static")
 
 theme_path = "theme.json"
-app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
+app = Flask(__name__, template_folder="templates", static_folder=static_dir)
 
 
 

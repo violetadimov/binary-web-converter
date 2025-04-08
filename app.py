@@ -1,6 +1,8 @@
 
 from bson.objectid import ObjectId
 from flask import Flask, render_template, request
+
+from c7_engine import interpret_command
 from utils import binary_tools
 import  os
 from pymongo import MongoClient
@@ -97,6 +99,30 @@ def view_history():
 def clear_history():
     history_collection.delete_many({})
     return render_template("history.html", history=[])
+
+@app.route("/create", methods=["POST"])
+def create():
+    user_input = request.form.get("description")
+    plan = interpret_command(user_input)
+    if "error" in plan:
+        return render_template("index.html", result=plan["error"])
+
+    path = generated_projects(plan)
+    return render_template("index.html", result=f"Project generated at: {path}")
+
+@app.route("/")
+def home():
+    return render_template("index.html") #contains Binary converter
+
+@app.route('/create', methods=['GET', 'POST'])
+def create7():
+    if request.method == "POST":
+        description = request.form.get("description")
+
+        # todo: process the c7 logic
+        return render_template("create_result.html", description=description)
+    return render_template("create7.html")
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)

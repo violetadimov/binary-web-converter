@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create7 (C7) – Build by Words</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="menu-icon" onclick="toggleMenu()">
+            &#9776
+        </div>
+
+        <ul class="menu-bar">
+           <li><a href="/">Binary Converter</a></li>
+           <li><a href="/create">Create 7</a></li>
+        </ul>
+        <div class="dark-mode-toggle">
+          <span class="toggle-label">Dark Mode</span>
+          <label class="switch">
+            <input type="checkbox" id="toggleDarkMode">
+            <span class="slider-round"></span>
+          </label>
+        </div>
+
+    </div>
+
+    <!-- Main C7 Interface -->
+    <main class="c7-container">
+        <h1>Create 7 – Describe to Build</h1>
+        <form method="POST" action="/create">
+            <textarea name="description" placeholder="Describe what you want to create (e.g., 'A basic weather app with search')"></textarea>
+            <button type="submit">Generate</button>
+        </form>
+
+        {% if output %}
+            <h2>Generated Code</h2>
+            <pre class="output-box">{{ output }}</pre>
+        {% endif %}
+    </main>
+
+    <script>
+    const toggle = document.getElementById("toggleDarkMode");
+
+    // Load current theme from server
+    fetch("/get-theme")
+      .then(res => res.json())
+      .then(data => {
+        if (data.theme === "dark") {
+          document.body.classList.add("dark-mode");
+          toggle.checked = true;
+        }
+      });
+
+    // Update theme and send to server
+    toggle.addEventListener("change", () => {
+      const theme = toggle.checked ? "dark" : "light";
+      document.body.classList.toggle("dark-mode", theme === "dark");
+      fetch("/set-theme", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ theme })
+      });
+    });
+  </script>
+  <script>
+      function toggleMenu() {
+          const nav = document.getElementById("navLinks");
+          nav.classList.toggle("show-nav")
+      }
+  </script>
+</body>
+</html>

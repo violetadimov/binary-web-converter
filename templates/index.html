@@ -6,11 +6,21 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="dark-mode-toggle">
+
+  <div class="top-bar">
+    <nav class="menu-bar">
+      <ul>
+        <li><a href="/">Binary Converter</a></li>
+        <li><a href="/create">Create7 (C7) </a></li>
+      </ul>
+    </nav>
+    <div class="dark-mode-toggle">
+      <span class="toggle-label">Dark Mode</span>
       <label class="switch">
         <input type="checkbox" id="toggleDarkMode">
-        <span class="slider round"></span>
+        <span class="slider-round"></span>
       </label>
+    </div>
   </div>
   <div class="container">
     <h1>Binary Converter</h1>
