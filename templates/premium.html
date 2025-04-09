@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>History – Create7</title>
+  <meta charset="UTF-8" />
+  <title>Upgrade to Premium – Create7</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="dark-mode">
@@ -12,8 +12,8 @@
       <li><a href="/dashboard">Home</a></li>
       <li><a href="/create">Create</a></li>
       <li><a href="/projects">My Projects</a></li>
-      <li><a href="/history" class="active">History</a></li>
-      <li><a href="/premium">Premium</a></li>
+      <li><a href="/history">History</a></li>
+      <li><a href="/premium" class="active">Premium</a></li>
       <li><a href="/help">Help</a></li>
       <li><a href="/settings">Settings</a></li>
     </ul>
@@ -32,24 +32,23 @@
     </div>
 
     <div class="content">
-      <h1>Conversion History</h1>
-      {% if history %}
-        <div class="project-grid">
-          {% for entry in history %}
-            <div class="project-tile">
-              <p><strong>{{ entry['mode'] }}</strong></p>
-              <p>{{ entry['input'] }} → <br><code>{{ entry['result'] }}</code></p>
-              <small>{{ entry['timestamp'] }}</small>
-            </div>
-          {% endfor %}
-        </div>
-      {% else %}
-        <p>No history found.</p>
-      {% endif %}
+      <h1>Upgrade to Premium</h1>
+      <table class="feature-table">
+        <thead>
+          <tr><th>Feature</th><th>Free</th><th>Premium</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Basic Project Creation</td><td>✔</td><td>✔</td></tr>
+          <tr><td>Save History</td><td>✔</td><td>✔</td></tr>
+          <tr><td>Code Export</td><td>—</td><td>✔</td></tr>
+          <tr><td>Advanced Templates</td><td>—</td><td>✔</td></tr>
+          <tr><td>Priority Support</td><td>—</td><td>✔</td></tr>
+        </tbody>
+      </table>
+      <a href="/upgrade" class="btn">Upgrade Now</a>
     </div>
   </div>
 
   <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
-

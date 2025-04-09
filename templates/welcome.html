@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="welcome-container">
+    <h1>Welcome to Create7</h1>
+    <p class="tagline">Build apps and websites just by describing them in words.</p>
+    <div class="auth-links">
+      <a href="{{ url_for('signup') }}" class="btn">Sign Up</a>
+      <a href="{{ url_for('login') }}" class="btn">Login</a>
+    </div>
+  </div>
+{% endblock %}

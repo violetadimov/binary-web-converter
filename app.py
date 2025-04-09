@@ -1,129 +1,141 @@
-
-from bson.objectid import ObjectId
-from flask import Flask, render_template, request
-
-from c7_engine import interpret_command
-from utils import binary_tools
-import  os
+import os
+from flask import Flask, render_template, request, redirect, url_for, session
+from datetime import datetime, timezone
 from pymongo import MongoClient
-from datetime import datetime
+from bson.objectid import ObjectId
+from c7_engine import interpret_command
+from functools import wraps
+#import os
+from dotenv import load_dotenv
+load_dotenv()
+from auth import hash_password, check_password, get_user_by_email_or_username, create_user, is_premium_user
 
 
-#clear the conversion history each  time the app starts
-with open("history_file/conversion_history.txt", "w") as file:
-    file.write("")
+app = Flask(__name__)
+app.secret_key = "super-secret-key"
 
-#Flask App Setup
-template_dir = os.path.abspath("templates")
-#
-app = Flask(__name__, template_folder=template_dir)
+# MongoDB Setup
+client = MongoClient(os.environ["MONGO_URI"])
+db = client["create7"]
+users = db["users"]
+projects = db["projects"]
 
-#MongoDB Setup
-MONGO_URI = "mongodb+srv://binaryUser:G%40W93@converter.ghsrsp2.mongodb.net/?retryWrites=true&w=majority&appName=Converter"
-client = MongoClient(MONGO_URI)
-db = client['converter']
-history_collection = db['conversion_history']
 
-#history = []
+# ----- Auth Decorators -----
+def login_required(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        if "user_id" not in session:
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
 
+    return wrapped
+
+
+# ----- Routes -----
 @app.route("/", methods=["GET", "POST"])
-def index():
-    result = ""
+def welcome():
+    return render_template("welcome.html")
+
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
     if request.method == "POST":
-        input_data = request.form["input"]
-        mode = request.form["mode"]
+        email = request.form["email"]
+        username = request.form["username"]
+        password = request.form["password"]
+        confirm = request.form["confirm"]
 
-        try:
-            if mode == "dec_to_bin":
-                result = binary_tools.decimal_to_binary(input_data)
-            elif mode == "bin_to_dec":
-                result = binary_tools.binary_to_decimal(input_data)
-            elif mode == "text_to_bin":
-                result = binary_tools.text_to_binary(input_data)
-            elif mode == "bin_to_text":
-                result = binary_tools.binary_to_text(input_data)
+        if password != confirm:
+            return render_template("signup.html", error="Passwords do not match.")
 
-            else: result = "Invalid mode"
+        if get_user_by_email_or_username(email) or get_user_by_email_or_username(username):
+            return render_template("signup.html", error="User already exists.")
 
-            #Save MongoDB
+        hashed = hash_password(password)
+        user_id = create_user(email, username, hashed)
+        session["user_id"] = str(user_id)
+        return redirect("/dashboard")
 
-            timestamp = datetime.now()
-            formatted_timestamp = timestamp.strftime("%B %d, %Y - %I:%M %p")
-            history_collection.insert_one({
-                "input": input_data,
-                "mode": mode,
-                "result": result,
-                "timestamp": formatted_timestamp,
-            })
+    return render_template("signup.html")
 
-        except Exception as e:
-            result = f"Error: {str(e)}"
 
-    return render_template("index.html", result=result) #history=history[-5:])
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        user_input = request.form["user_input"]
+        password = request.form["password"]
 
-@app.route("/history", methods=["GET"])
-def view_history():
-    #with open("history_file/conversion_history.txt", "r") as f:
-    #get the last 10 conversion, newest first.
-    try:
-        history = (history_collection.find().sort("_id", -1).limit(10))
-        formatted_history = []
+        user = get_user_by_email_or_username(user_input)
+        if user and check_password(password, user["password"]):
+            session["user_id"] = str(user["_id"])
+            return redirect("/dashboard")
+        return render_template("login.html", error="Invalid credentials.")
 
-        # Map internal mode keys to display labels
-        mode_mapping = {
-            "dec_to_bin": "Decimal to Binary",
-            "bin_to_dec": "Binary to Decimal",
-            "text_to_bin": "Text to Binary",
-            "bin_to_text": "Binary to Text",
-        }
-        for entry in history:
-            entry['_id'] = str(entry['_id']) # convert objectId to string
+    return render_template("login.html")
 
-            #Use get() safely for timestamp
-            timestamp = entry.get('timestamp')
-            if timestamp:
-                entry['timestamp'] = str(timestamp) #convert datetime to string
-            else:
-                entry['timestamp'] = "N/A"
 
-            # Translate mode key to display value
-            raw_mode = entry.get('mode', 'Unknown')
-            entry['mode'] = mode_mapping.get(raw_mode, raw_mode)
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
 
-            formatted_history.append(entry)
-        return render_template("history.html", history=formatted_history)
-    except Exception as e:
-        print("Error loading history:", e)
-        return f"Error loading history: {str(e)}"
-@app.route("/clear-history", methods=["POST"])
-def clear_history():
-    history_collection.delete_many({})
-    return render_template("history.html", history=[])
 
-@app.route("/create", methods=["POST"])
-def create():
-    user_input = request.form.get("description")
-    plan = interpret_command(user_input)
-    if "error" in plan:
-        return render_template("index.html", result=plan["error"])
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    return render_template("dashboard.html")
 
-    path = generated_projects(plan)
-    return render_template("index.html", result=f"Project generated at: {path}")
 
-@app.route("/")
-def home():
-    return render_template("index.html") #contains Binary converter
-
-@app.route('/create', methods=['GET', 'POST'])
+@app.route("/create", methods=["GET", "POST"])
+@login_required
 def create7():
-    if request.method == "POST":
-        description = request.form.get("description")
+    user_id = session["user"]["id"]
+    user = users.find_one({"_id": ObjectId(user_id)})
 
-        # todo: process the c7 logic
-        return render_template("create_result.html", description=description)
+    if request.method == "POST":
+        if not is_premium_user(user):
+            return redirect("/premium-required")
+
+        description = request.form["description"]
+        output = interpret_command(description)
+
+        projects.insert_one({
+            "user_id": ObjectId(user_id),
+            "description": description,
+            "code": output,
+            "timestamp": datetime.now(timezone.utc)
+        })
+
+        return render_template("create7.html", output=output, description=description)
+
     return render_template("create7.html")
 
 
+@app.route("/history")
+@login_required
+def history():
+    user_id = session["user_id"]
+    project_list = projects.find({"user_id": ObjectId(user_id)}).sort("timestamp", -1)
+    return render_template("history.html", projects=project_list)
+
+
+@app.route("/premium")
+@login_required
+def premium():
+    return render_template("premium.html")
+
+
+@app.route("/premium-required")
+@login_required
+def premium_required():
+    return render_template("premium_required.html")
+
+@app.route("/my-projects", methods=["GET"])
+def my_projects():
+    return render_template("my_projects.html")
+# ----- Development Server -----
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    app.run(debug=True)
+
 

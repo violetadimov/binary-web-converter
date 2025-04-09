@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>History – Create7</title>
+  <meta charset="UTF-8" />
+  <title>My Projects – Create7</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="dark-mode">
@@ -11,8 +11,8 @@
     <ul>
       <li><a href="/dashboard">Home</a></li>
       <li><a href="/create">Create</a></li>
-      <li><a href="/projects">My Projects</a></li>
-      <li><a href="/history" class="active">History</a></li>
+      <li><a href="/projects" class="active">My Projects</a></li>
+      <li><a href="/history">History</a></li>
       <li><a href="/premium">Premium</a></li>
       <li><a href="/help">Help</a></li>
       <li><a href="/settings">Settings</a></li>
@@ -32,19 +32,27 @@
     </div>
 
     <div class="content">
-      <h1>Conversion History</h1>
-      {% if history %}
+      <h1>Your Projects</h1>
+      {% if projects %}
         <div class="project-grid">
-          {% for entry in history %}
+          {% for project in projects %}
             <div class="project-tile">
-              <p><strong>{{ entry['mode'] }}</strong></p>
-              <p>{{ entry['input'] }} → <br><code>{{ entry['result'] }}</code></p>
-              <small>{{ entry['timestamp'] }}</small>
+              <h3>{{ project.description }}</h3>
+              <pre>{{ project.code[:150] }}{% if project.code|length > 150 %}...{% endif %}</pre>
+              <small>{{ project.timestamp.strftime('%b %d, %Y %I:%M %p') }}</small>
+              <div class="project-buttons">
+                <form method="GET" action="/project/{{ project._id }}">
+                  <button>View Full Code</button>
+                </form>
+                <form method="POST" action="/delete_project/{{ project._id }}">
+                  <button class="delete">Delete</button>
+                </form>
+              </div>
             </div>
           {% endfor %}
         </div>
       {% else %}
-        <p>No history found.</p>
+        <p>No projects yet. Create one from the sidebar.</p>
       {% endif %}
     </div>
   </div>
@@ -52,4 +60,3 @@
   <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
-

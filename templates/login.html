@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container auth-form">
+  <h1>Login</h1>
+  <form method="POST" action="/login">
+    <input type="text" name="identifier" placeholder="Username or Email" required>
+    <input type="password" name="password" id="loginPassword" placeholder="Password" required>
+    <label class="show-password">
+      <input type="checkbox" onclick="togglePassword('loginPassword')"> Show Password
+    </label>
+    <button type="submit" class="btn">Login</button>
+  </form>
+  <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
+</div>
+{% endblock %}

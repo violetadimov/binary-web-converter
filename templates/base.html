@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Create7{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body class="dark-mode">
+    <div class="sidebar">
+        <div class="logo">Create7</div>
+        <nav>
+            <a href="{{ url_for('welcome') }}"><i class="icon">🏠</i> Home</a>
+            <a href="{{ url_for('my_projects') }}"><i class="icon">📁</i> My Projects</a>
+            <a href="#"><i class="icon">📄</i> Templates</a>
+            <a href="{{ url_for('history') }}"><i class="icon">🕘</i> History</a>
+            <a href="#"><i class="icon">⚙️</i> Settings</a>
+            <a href="#"><i class="icon">❓</i> Help</a>
+        </nav>
+    </div>
+    <div class="main">
+        <div class="top-bar">
+            <div class="menu-icon">☰</div>
+            <div class="user-icon"><a href="{{ url_for('login') }}">👤</a></div>
+        </div>
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

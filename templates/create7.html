@@ -1,73 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Create7 (C7) – Build by Words</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8">
+  <title>Create7 – AI Builder</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="dark-mode">
+  <div class="main">
+    <!-- Top Bar -->
     <div class="top-bar">
-        <div class="menu-icon" onclick="toggleMenu()">
-            &#9776
-        </div>
+      <div class="menu-icon">☰</div>
 
-        <ul class="menu-bar">
-           <li><a href="/">Binary Converter</a></li>
-           <li><a href="/create">Create 7</a></li>
-        </ul>
-        <div class="dark-mode-toggle">
-          <span class="toggle-label">Dark Mode</span>
-          <label class="switch">
-            <input type="checkbox" id="toggleDarkMode">
-            <span class="slider-round"></span>
-          </label>
-        </div>
+      <div class="user-icon">
+        <a href="/login">👤</a>
+      </div>
 
+      <div class="dark-mode-toggle">
+        <label for="toggleDarkMode" class="switch">
+          <input type="checkbox" id="toggleDarkMode">
+          <span class="slider round"></span>
+        </label>
+      </div>
     </div>
 
-    <!-- Main C7 Interface -->
-    <main class="c7-container">
-        <h1>Create 7 – Describe to Build</h1>
-        <form method="POST" action="/create">
-            <textarea name="description" placeholder="Describe what you want to create (e.g., 'A basic weather app with search')"></textarea>
-            <button type="submit">Generate</button>
-        </form>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+      <h2>Create7</h2>
+      <ul>
+        <li><a href="/dashboard">Home</a></li>
+        <li><a href="/my-projects">My Projects</a></li>
+        <li><a href="/templates">Templates</a></li>
+        <li><a href="/history">History</a></li>
+        <li><a href="/settings">Settings</a></li>
+        <li><a href="/help">Help</a></li>
+      </ul>
+    </div>
 
-        {% if output %}
-            <h2>Generated Code</h2>
-            <pre class="output-box">{{ output }}</pre>
-        {% endif %}
-    </main>
+    <!-- Command Input + Output Section -->
+    <div class="main-content">
+      <form method="POST" action="/create" class="command-section">
+        <textarea name="description" placeholder="Describe what you want to create..." required></textarea>
+        <button type="submit">Generate</button>
+      </form>
 
-    <script>
-    const toggle = document.getElementById("toggleDarkMode");
+      <div class="output-section">
+        <div class="output-preview">
+          <h3>Output Preview</h3>
+          <div class="preview-box">{{ output | safe }}</div>
+        </div>
 
-    // Load current theme from server
-    fetch("/get-theme")
-      .then(res => res.json())
-      .then(data => {
-        if (data.theme === "dark") {
-          document.body.classList.add("dark-mode");
-          toggle.checked = true;
-        }
-      });
+        <div class="source-code">
+          <h3>Source Code</h3>
+          <pre>{{ output }}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    // Update theme and send to server
-    toggle.addEventListener("change", () => {
-      const theme = toggle.checked ? "dark" : "light";
-      document.body.classList.toggle("dark-mode", theme === "dark");
-      fetch("/set-theme", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ theme })
-      });
-    });
-  </script>
-  <script>
-      function toggleMenu() {
-          const nav = document.getElementById("navLinks");
-          nav.classList.toggle("show-nav")
-      }
-  </script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
+
