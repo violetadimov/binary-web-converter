@@ -1,14 +1,8 @@
 from flask import Blueprint, request, redirect, session, url_for
-from pymongo import MongoClient
 import bcrypt
-import os
-from dotenv import load_dotenv
-load_dotenv()
+from utils.db import users
 
 auth_bp = Blueprint('auth', __name__)
-client = MongoClient(os.environ["MONGO_URI"])
-db = client['create7']
-users = db['users']
 
 @auth_bp.route("/signup", methods=["POST"])
 def signup():

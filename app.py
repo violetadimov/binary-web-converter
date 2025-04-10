@@ -5,7 +5,7 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 from c7_engine import interpret_command
 from functools import wraps
-#import os
+from utils.db import client, db, users, projects
 from dotenv import load_dotenv
 load_dotenv()
 from auth import hash_password, check_password, get_user_by_email_or_username, create_user, is_premium_user
@@ -14,11 +14,6 @@ from auth import hash_password, check_password, get_user_by_email_or_username, c
 app = Flask(__name__)
 app.secret_key = "super-secret-key"
 
-# MongoDB Setup
-client = MongoClient(os.environ["MONGO_URI"])
-db = client["create7"]
-users = db["users"]
-projects = db["projects"]
 
 
 # ----- Auth Decorators -----

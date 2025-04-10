@@ -22,6 +22,16 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  const hamburger = document.getElementById('hamburger');
+  const sidebar = document.getElementById('sidebar');
+
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+  });
+});
+
+
 function togglePassword(inputId) {
   const field = document.getElementById(inputId);
   if (field.type === "password") {

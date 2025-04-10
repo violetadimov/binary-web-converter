@@ -1,28 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Create7{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+  <meta charset="UTF-8">
+  <title>{% block title %}Create7{% endblock %}</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+  <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <script defer src="{{ url_for('static', filename='script.js') }}"></script>
 </head>
+
 <body class="dark-mode">
-    <div class="sidebar">
-        <div class="logo">Create7</div>
-        <nav>
-            <a href="{{ url_for('welcome') }}"><i class="icon">🏠</i> Home</a>
-            <a href="{{ url_for('my_projects') }}"><i class="icon">📁</i> My Projects</a>
-            <a href="#"><i class="icon">📄</i> Templates</a>
-            <a href="{{ url_for('history') }}"><i class="icon">🕘</i> History</a>
-            <a href="#"><i class="icon">⚙️</i> Settings</a>
-            <a href="#"><i class="icon">❓</i> Help</a>
+    <div class="top-bar">
+        <div class="top-left">
+            <div class="brand C7">C7</div>
+            <button class="hamburger" id="hamburger">&#9776</button>
+        </div>
+        <div class="top-center">
+            <div class="brand">CREATE7</div>
+        </div>
+        <div class="top-right">
+            <a href="{{ url_for('login') }}"><i class="fa-solid fa-circle-user"></i></a>
+        </div>
+    </div>
+    <div class="layout">
+        <nav class="sidebar" id="sidebar">
+            <ul>
+                <li><a href="{{ url_for('welcome') }}"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li> <a href="{{ url_for('my_projects') }}"><i class="fa-solid fa-folder-open"></i> My Projects</a></li>
+                <li><a href="#"><i class="fa-solid fa-layer-group"></i> Templates</a></li>
+                <li><a href="{{ url_for('history') }}"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+                <li><a href="#"><i class="fa-solid fa-gear"></i> Settings</a></li>
+                <li><a href="#"><i class="fa-solid fa-circle-question"></i> Help</a></li>
+            </ul>
         </nav>
     </div>
     <div class="main">
-        <div class="top-bar">
-            <div class="menu-icon">☰</div>
-            <div class="user-icon"><a href="{{ url_for('login') }}">👤</a></div>
-        </div>
         <main class="main-content">
             {% block content %}{% endblock %}
         </main>

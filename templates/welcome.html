@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <div class="welcome-container">
+<main>
+   <div class="welcome-container">
     <h1>Welcome to Create7</h1>
-    <p class="tagline">Build apps and websites just by describing them in words.</p>
-    <div class="auth-links">
+    <p class="subtitle">Build apps and websites just by describing them in words.</p>
+    <div class="button-group">
       <a href="{{ url_for('signup') }}" class="btn">Sign Up</a>
-      <a href="{{ url_for('login') }}" class="btn">Login</a>
+      <a href="{{ url_for('login') }}" class="btn secondary">Login</a>
     </div>
   </div>
+</main>
+
 {% endblock %}
