@@ -12,38 +12,74 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
       crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+  <script defer src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script defer src="{{ url_for('static', filename='monaco.js') }}"></script>
   <script defer src="{{ url_for('static', filename='script.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='kaelyra.js') }}"></script>
+
 </head>
 
 <body class="dark-mode">
     <div class="top-bar">
         <div class="top-left">
-            <div class="brand C7">C7</div>
-            <button class="hamburger" id="hamburger">&#9776</button>
-        </div>
-        <div class="top-center">
-            <div class="brand">CREATE7</div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+            </div>
+
         </div>
         <div class="top-right">
-            <a href="{{ url_for('login') }}"><i class="fa-solid fa-circle-user"></i></a>
+            <div class="user-dropdown" id="userDropdown">
+                <i class="fa-solid fa-circle-user" id="userIcon"></i>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="/profile">Profile</a>
+                    <a href="/settings">Settings</a>
+                    <a href="/logout">Logout</a>
+                </div>
+            </div>
+
         </div>
     </div>
     <div class="layout">
-        <nav class="sidebar" id="sidebar">
+        <nav class="sidebar" id="sidebar" >
+            <div class="sidebar-logo">
+                <a href="{{ url_for('welcome') }}"><img src="{{ url_for('static', filename='images/logo1.png') }}" alt="logo"></a>
+            </div>
             <ul>
-                <li><a href="{{ url_for('welcome') }}"><i class="fa-solid fa-house"></i> Home</a></li>
-                <li> <a href="{{ url_for('my_projects') }}"><i class="fa-solid fa-folder-open"></i> My Projects</a></li>
-                <li><a href="#"><i class="fa-solid fa-layer-group"></i> Templates</a></li>
-                <li><a href="{{ url_for('history') }}"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
-                <li><a href="#"><i class="fa-solid fa-gear"></i> Settings</a></li>
-                <li><a href="#"><i class="fa-solid fa-circle-question"></i> Help</a></li>
+                <li class="{% if request.path == url_for('dashboard') %}active{% endif %}">
+                    <a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-table-columns"></i> Dashboard</a>
+                </li>
+                <li class="{% if request.path == url_for('welcome') %}active{% endif %}">
+                    <a href="{{ url_for('welcome') }}"><i class="fa-solid fa-house"></i> Home</a>
+                </li>
+                <li class="{% if request.path == url_for('create7') %}active{% endif %}">
+                    <a href="{{ url_for('create7') }}"><i class="fa-solid fa-wand-magic-sparkles"></i>Create</a>
+                </li>
+                <li class="{% if request.path == url_for('my_projects') %}active{% endif %}">
+                    <a href="{{ url_for('my_projects') }}"><i class="fa-solid fa-folder-open"></i> My Projects</a>
+                </li>
+                <li class="{% if request.path == url_for('template') %}active{% endif %}">
+                    <a href="{{ url_for('template') }}"><i class="fa-solid fa-layer-group"></i> Templates</a>
+                </li>
+
             </ul>
         </nav>
+        <div id="sidebarOverlay" class="sidebar-overlay"></div>
     </div>
     <div class="main">
         <main class="main-content">
             {% block content %}{% endblock %}
         </main>
+    </div>
+    <div id="Kaelyra-avatar" onclick="kaelyraActivate()">
+        <img class="kaelyra-icon" src="{{ url_for('static', filename='images/newkael.png') }}" alt="kaelyra">
+    </div>
+    <div id="kaelyra-dialogue" class="kaelyra-tip">...</div>
+    <div id="kaelyra-modal" class="kaelyra-modal">
+      <div class="kaelyra-modal-content">
+        <textarea id="kaelyra-input" placeholder="Speak your command, creator..."></textarea>
+        <button onclick="submitKaelyraCommand()">Generate</button>
+      </div>
     </div>
 </body>
 </html>

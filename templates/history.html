@@ -1,55 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>History – Create7</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body class="dark-mode">
-  <div class="sidebar">
-    <div class="logo">Create7</div>
-    <ul>
-      <li><a href="/dashboard">Home</a></li>
-      <li><a href="/create">Create</a></li>
-      <li><a href="/projects">My Projects</a></li>
-      <li><a href="/history" class="active">History</a></li>
-      <li><a href="/premium">Premium</a></li>
-      <li><a href="/help">Help</a></li>
-      <li><a href="/settings">Settings</a></li>
-    </ul>
-  </div>
+{% extends 'base.html' %}
 
-  <div class="main">
-    <div class="top-bar">
-      <div class="menu-icon">☰</div>
-      <div class="user-icon"><a href="/login">👤</a></div>
-      <div class="dark-mode-toggle">
-        <label class="switch">
-          <input type="checkbox" id="toggleDarkMode">
-          <span class="slider round"></span>
-        </label>
-      </div>
-    </div>
-
-    <div class="content">
-      <h1>Conversion History</h1>
-      {% if history %}
-        <div class="project-grid">
-          {% for entry in history %}
-            <div class="project-tile">
-              <p><strong>{{ entry['mode'] }}</strong></p>
-              <p>{{ entry['input'] }} → <br><code>{{ entry['result'] }}</code></p>
-              <small>{{ entry['timestamp'] }}</small>
-            </div>
-          {% endfor %}
+{% block content %}
+<div class="history-container">
+  <h2>Your Project History</h2>
+  {% if projects|length == 0 %}
+    <p>No projects found.</p>
+  {% else %}
+    <div class="project-grid">
+      {% for project in projects %}
+        <div class="project-tile">
+          <h3>{{ project.description }}</h3>
+          <pre><code>{{ project.code }}</code></pre>
+          <p class="timestamp">Created on: {{ project.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
         </div>
-      {% else %}
-        <p>No history found.</p>
-      {% endif %}
+      {% endfor %}
     </div>
-  </div>
-
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
-</html>
-
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,40 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Dashboard – Create7</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body class="dark-mode">
-  <div class="sidebar">
-    <div class="logo">Create7</div>
-    <ul>
-      <li><a href="/dashboard" class="active">Home</a></li>
-      <li><a href="/create">Create</a></li>
-      <li><a href="/projects">My Projects</a></li>
-      <li><a href="/history">History</a></li>
-      <li><a href="/premium">Premium</a></li>
-      <li><a href="/help">Help</a></li>
-      <li><a href="/settings">Settings</a></li>
-    </ul>
-  </div>
+{% extends 'base.html' %}
 
-  <div class="main">
-    <div class="top-bar">
-      <div class="menu-icon">☰</div>
-      <div class="user-icon"><a href="/login">👤</a></div>
-      <div class="dark-mode-toggle">
-        <label class="switch">
-          <input type="checkbox" id="toggleDarkMode">
-          <span class="slider round"></span>
-        </label>
-      </div>
+{% block content %}
+<div class="dashboard">
+  <h1>Welcome to your Dashboard</h1>
+  <p class="dashboard-subtitle">Manage your apps, view history, and explore templates - all in one place</p>
+
+  <div class="dashboard-titles">
+    <div class="dashboard-title">
+      <h3>Start a New Project</h3>
+      <p>Create something from scratch using your ideas.</p>
+      <a href="{{ url_for('create7') }}" class="btn">Launch Builder</a>
     </div>
-    <div class="content">
-      <h1>Welcome to your Dashboard</h1>
-      <p>Select an option from the sidebar to get started.</p>
+    <div class="dashboard-title">
+      <h3>My Projects</h3>
+      <p>View and mangae your previously generated projects.</p>
+      <a href="{{ url_for('my_projects') }}" class="btn">Open Projects</a>
+    </div>
+    <div class="dashboard-title">
+      <h3>Templates</h3>
+      <p>Use pre-built layout to build faster.</p>
+      <a href="{{ url_for('template') }}" class="btn">Browse Templates</a>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
-</html>
+</div>
+{% endblock %}

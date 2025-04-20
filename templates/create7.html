@@ -1,63 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Create7 – AI Builder</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body class="dark-mode">
-  <div class="main">
-    <!-- Top Bar -->
-    <div class="top-bar">
-      <div class="menu-icon">☰</div>
+{% extends "base.html" %}
+{% block content %}
+<div class="create7-wrapper">
+  <div class="left-panel">
 
-      <div class="user-icon">
-        <a href="/login">👤</a>
+    <div class="command-box">
+      <input id="commandInput" type="text" placeholder="What do you want to create?" />
+      <div class="action-buttons">
+        <button class="btn" onclick="generateOutput()">Generate</button>
+        <button class="btn" onclick="saveProject()">Save</button>
+        <button class="btn" onclick="toggleDeviceView()">Switch View</button>
+        <button class="btn" onclick="resetContext()">Reset</button>
       </div>
-
-      <div class="dark-mode-toggle">
-        <label for="toggleDarkMode" class="switch">
-          <input type="checkbox" id="toggleDarkMode">
-          <span class="slider round"></span>
-        </label>
-      </div>
+      <ul id="suggestions" class="suggestion-list"></ul>
     </div>
 
-    <!-- Sidebar Navigation -->
-    <div class="sidebar">
-      <h2>Create7</h2>
-      <ul>
-        <li><a href="/dashboard">Home</a></li>
-        <li><a href="/my-projects">My Projects</a></li>
-        <li><a href="/templates">Templates</a></li>
-        <li><a href="/history">History</a></li>
-        <li><a href="/settings">Settings</a></li>
-        <li><a href="/help">Help</a></li>
-      </ul>
+    <div class="tab-buttons">
+      <button data-tab="code" onclick="switchView('code')" class="tab active">Code</button>
+      <button data-tab="output" onclick="switchView('output')" class="tab">Output</button>
     </div>
 
-    <!-- Command Input + Output Section -->
-    <div class="main-content">
-      <form method="POST" action="/create" class="command-section">
-        <textarea name="description" placeholder="Describe what you want to create..." required></textarea>
-        <button type="submit">Generate</button>
-      </form>
-
-      <div class="output-section">
-        <div class="output-preview">
-          <h3>Output Preview</h3>
-          <div class="preview-box">{{ output | safe }}</div>
-        </div>
-
-        <div class="source-code">
-          <h3>Source Code</h3>
-          <pre>{{ output }}</pre>
-        </div>
+      <!-- Monaco Editors -->
+    <div id="codeView">
+      <div class="code-output" >
+        <div id="htmlEditor" class="code-editor"></div>
+        <div id="cssEditor" class="code-editor hidden"></div>
+        <div id="jsEditor" class="code-editor hidden"></div>
+        <div id="backendEditor" class="code-editor hidden"></div>
       </div>
     </div>
   </div>
 
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
-</html>
+  <div id="outputView" class="hidden">
+    <div class="right-panel">
+      <div class="preview-toolbar">
+        <h4>File</h4>
+      </div>
+      <div class="file-box">
+        <p>new_file.py</p>
+      </div>
+      <iframe id="livePreview" class="preview-box desktop-view"></iframe>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
 

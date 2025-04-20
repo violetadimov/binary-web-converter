@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from datetime import datetime, timezone
 from pymongo import MongoClient
 from bson.objectid import ObjectId
@@ -77,26 +77,29 @@ def logout():
 
 
 @app.route("/dashboard")
-@login_required
+#@login_required
 def dashboard():
     return render_template("dashboard.html")
 
 
 @app.route("/create", methods=["GET", "POST"])
-@login_required
+#@login_required
 def create7():
-    user_id = session["user"]["id"]
-    user = users.find_one({"_id": ObjectId(user_id)})
+    #temporary bypass for development (commented out session for now)
+    #user_id = session["user"]["id"]
+    #user = users.find_one({"_id": ObjectId(user_id)})
+    user_id = "dev_user" #placeholder
+    user = {"_id": "dev_user", "premium": True} #mock user
 
     if request.method == "POST":
-        if not is_premium_user(user):
+        if not user.get("premium"): #is_premium_user(user)
             return redirect("/premium-required")
 
         description = request.form["description"]
         output = interpret_command(description)
 
         projects.insert_one({
-            "user_id": ObjectId(user_id),
+            "user_id": user_id, #ObjectId(user_id)
             "description": description,
             "code": output,
             "timestamp": datetime.now(timezone.utc)
@@ -108,27 +111,62 @@ def create7():
 
 
 @app.route("/history")
-@login_required
+#@login_required
 def history():
-    user_id = session["user_id"]
-    project_list = projects.find({"user_id": ObjectId(user_id)}).sort("timestamp", -1)
+    #Tempory mock user for development
+    #user_id = session["user_id"]
+    user_id = "dev_user"
+    #project_list = projects.find({"user_id": ObjectId(user_id)}).sort("timestamp", -1)
+    project_cursor = projects.find({"user_id": user_id}).sort("timestamp", -1)
+    project_list = list(project_cursor)
     return render_template("history.html", projects=project_list)
 
 
 @app.route("/premium")
-@login_required
+#@login_required
 def premium():
     return render_template("premium.html")
 
 
 @app.route("/premium-required")
-@login_required
+#@login_required
 def premium_required():
     return render_template("premium_required.html")
 
 @app.route("/my-projects", methods=["GET"])
 def my_projects():
     return render_template("my_projects.html")
+
+@app.route("/save_project", methods=["POST"])
+def save_project():
+    data = request.get_json()
+    user_id = session.get("user_id") or "guest"
+
+    project = {
+        "user_id": user_id,
+        "description": data.get("description", "Untitled"),
+        "html": data.get("html", ""),
+        "css": data.get("css", ""),
+        "js": data.get("js", ""),
+        "backend": data.get("backend", ""),
+        "timestamp": datetime.utcnow()
+    }
+
+    db.projects.insert_one(project)
+    return jsonify({"message": "Project saved successfully!"})
+
+@app.route('/template')
+def template():
+    return render_template('template.html')
+
+@app.route('/settings', methods=["GET", "POST"])
+def settings():
+    return render_template('settings.html')
+
+@app.route('/help')
+def help_page():
+    return render_template('help.html')
+
 # ----- Development Server -----
 if __name__ == "__main__":
     app.run(debug=True)
